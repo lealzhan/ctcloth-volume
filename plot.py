@@ -1,4 +1,6 @@
 import matplotlib.pylab as plt
+import numpy as np
+
 
 def plotImage(img, cm=plt.cm.gray):
     fig, ax = plt.subplots()
