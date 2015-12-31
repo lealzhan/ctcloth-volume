@@ -10,3 +10,6 @@ def load(file_name, mode='rb'):
 def save(file_name, data, mode='wb'):
     with open(file_name, mode) as file:
         np.save(file, data)
+
+if __name__ == '__main__':
+	pass
