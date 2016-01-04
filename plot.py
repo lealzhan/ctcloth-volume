@@ -19,6 +19,7 @@ def plotHistogram(data, bins):
     
     fig.show()
 
+
 def plotSurface(x, y, z):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')

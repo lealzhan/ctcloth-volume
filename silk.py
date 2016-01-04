@@ -1,8 +1,8 @@
 import numpy as np
-from common import load, dump
+from common import load, dump, time_current
 from orientation import generateDirections, computeFilters, computeFiberOrientationFFT
 from plot import *
-from tiffio import *
+from imageio import *
 
 
 def main():
@@ -24,10 +24,19 @@ def main():
 
     print 'load volume ...'
     v = load(silk_path)
-    v[v < ed * 65535.0] = 0.0
     
     v= v[400:600, 400:600, 55:75]
     print 'volume shape: ', v.shape
+
+    # denoise
+    v[v < ed * 65535.0] = 0.0
+
+    # binarize volume for filtering
+    # 0: fiber, 1: background
+    fiber = v > 0.0
+    background = np.logical_not(fiber)
+    v[fiber] = 0.0
+    v[background] = 1.0
 
     # fit (not implement yet)
 
@@ -42,9 +51,15 @@ def main():
         print 'load ds and qs ...'
         ds = load(ds_path)
         qs = load(qs_path)
-
+    
     print 'compute orientation ...'
+    start = time_current()    
     J_max, d_max = computeFiberOrientationFFT(v, ds, qs)
+    print 'time used: ', time_current() - start
+
+    # ..
+#    d_max[background] = 0.0
+
     print 'dump J, orientation ...'
     dump(J_path, J_max)
     dump(d_path, d_max)

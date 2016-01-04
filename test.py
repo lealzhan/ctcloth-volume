@@ -1,5 +1,6 @@
 import numpy as np
-from scipy import signal
+from scipy import signal, ndimage
+from common import time_current
 
 
 def testConvolveFFT():
@@ -29,5 +30,20 @@ def testConvolveFFT2():
     print r
 
 
+def testTime():
+    a = np.ones((212,212,32), dtype='float32') * 0.1 
+    k = np.ones((12,12,12), dtype='float32') * 1.1
+
+    start = time_current()
+    r = signal.fftconvolve(a, k, mode='same')
+    print time_current() - start
+
+    del r
+
+    start = time_current()
+    r1 = ndimage.correlate(a, k, mode='constant', cval=1.0)
+    print time_current() - start
+
+
 if __name__ == '__main__':
-    testConvolveFFT2()
+    testTime()

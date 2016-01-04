@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{46f0d217-8e0c-4d89-8101-751389366502}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>silk.py</StartupFile>
+    <StartupFile>test.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -36,7 +36,7 @@
     <Compile Include="test.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="tiffio.py" />
+    <Compile Include="imageio.py" />
     <Compile Include="volumeio.py" />
   </ItemGroup>
   <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
