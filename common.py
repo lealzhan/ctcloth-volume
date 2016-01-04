@@ -7,9 +7,9 @@ def load(file_name, mode='rb'):
     return data
 
 
-def save(file_name, data, mode='wb'):
+def dump(file_name, data, mode='wb'):
     with open(file_name, mode) as file:
-        np.save(file, data)
+        data.dump(file)
 
 if __name__ == '__main__':
 	pass

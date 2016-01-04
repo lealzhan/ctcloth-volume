@@ -38,7 +38,7 @@ def writeTiffsToFileFolder(folder_name, img_datas, prefix='', postfix='.tif'):
     '''img_datas: [img_height, img_width, img_count], uint16 type''' 
     for i in range(0, img_datas[2]):
         img_name = os.path.join(folder_name, prefix + str(i + 1) + postfix)
-        writeTiff(img_name, img[:,:,i])
+        writeTiff(img_name, img_datas[:,:,i])
 
 
 if __name__ == '__main__':

@@ -36,8 +36,7 @@ def generateDirections(nx, ny, nz):
     bound_points = generateBoundingPoints(nx, ny, nz)
     center = np.array([nx / 2, ny / 2, nz / 2])
 
-    directions = bound_points - center
-    directions = directions.astype('float32')
+    directions = (bound_points - center).astype('float32')
 
     for i in range(0, directions.shape[0]):
         sqrt_sum = np.sqrt((directions[i]**2).sum())
@@ -59,11 +58,21 @@ def computeFilter(h, s, t, d):
             r_sq = 0.0
         q[xi, yi, zi] = -2 * np.exp(-s * r_sq) + np.exp(-t * r_sq)
 
+    return q
+
+
+def computeFilters(h, s, t, ds):
+    qs = np.zeros((ds.shape[0], h, h, h), dtype='float32')
+    for i in range(0, ds.shape[0]):
+        qs[i] = computeFilter(h, s, t, ds[i])
+
+    return qs
+
 
 def computeFiberOrientation(v, ds, qs):
     neg_inf = -999999.0
     J_max = np.ones_like(v, dtype='float32') * neg_inf
-    d_max = np.zeros_like((v.shape[0], v.shape[1], v.shape[2], 3), dtype='float32')
+    d_max = np.zeros((v.shape[0], v.shape[1], v.shape[2], 3), dtype='float32')
 
     for i in range(qs.shape[0]):
         J = ndimage.correlate(v, qs[i], mode='constant', cval=1.0)
@@ -74,11 +83,27 @@ def computeFiberOrientation(v, ds, qs):
     return (J_max, d_max)
 
 
-def computeFiberOrientation2(v, ds, qs):
+def computeFiberOrientationFFT(v, ds, qs):
     '''fft based convolution'''
-    # TODO:
-    # r = signal.fftconvolve(a, k, mode='same')
-    pass
+    q_shape = qs[0].shape
+    pad_seq = ((q_shape[0]/2, q_shape[0]/2), (q_shape[1]/2, q_shape[1]/2), (q_shape[2]/2, q_shape[2]/2))
+    v = np.pad(v, pad_seq, mode='constant', constant_values=(1.0, 1.0))
+
+    neg_inf = -999999.0
+    J_max = np.ones_like(v, dtype='float32') * neg_inf
+    d_max = np.zeros((v.shape[0], v.shape[1], v.shape[2], 3), dtype='float32')
+
+    flip_q = [slice(None, None, -1)] * len(q_shape)
+    for i in range(qs.shape[0]):
+        J = signal.fftconvolve(v, qs[i][flip_q], mode='same')
+        update = J > J_max
+        J_max[update] = J[update]
+        d_max[update] = ds[i]
+
+    J_max = J_max[pad_seq[0][0]:(v.shape[0]-pad_seq[0][1]), pad_seq[1][0]:(v.shape[1]-pad_seq[1][1]), pad_seq[2][0]:(v.shape[2]-pad_seq[2][1])]
+    d_max = d_max[pad_seq[0][0]:(v.shape[0]-pad_seq[0][1]), pad_seq[1][0]:(v.shape[1]-pad_seq[1][1]), pad_seq[2][0]:(v.shape[2]-pad_seq[2][1])]
+
+    return (J_max, d_max)
 
 
 if __name__ == '__main__':
