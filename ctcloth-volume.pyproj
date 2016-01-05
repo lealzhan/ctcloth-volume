@@ -30,6 +30,9 @@
     <Compile Include="oldcode.py" />
     <Compile Include="orientation.py" />
     <Compile Include="plot.py" />
+    <Compile Include="resample.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="silk.py">
       <SubType>Code</SubType>
     </Compile>

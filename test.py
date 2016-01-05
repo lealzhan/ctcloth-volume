@@ -80,7 +80,7 @@ if __name__ == '__main__':
     bg = (v < 0.4 * 65535)
     v[bg] = 0.0
 
-    # need binarize?
+    # need binarize? yes!
     print 'binarize ...'
     fiber = np.logical_not(bg)
     v[fiber] = 1.0
