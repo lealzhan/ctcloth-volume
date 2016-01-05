@@ -1,6 +1,8 @@
 import numpy as np
 from scipy import signal, ndimage
-from common import time_current
+from common import time_current, load
+from plot import *
+from fit import *
 
 
 def testConvolveFFT():
@@ -45,5 +47,44 @@ def testTime():
     print time_current() - start
 
 
+def testFit():
+    print 'load volume ...'
+    v_path = r''
+    v = load(v_path)    # float32, [0, 65535]
+    print 'volume shape: ', v.shape
+
+    # first, denoise using ed, and eJ?!
+    print 'denoise using ed ...'
+    bg = [v < 0.4 * 65535]
+    v[bg] = 0.0
+
+    # need binarize?
+    print 'binarize ...'
+    fiber = np.logical_not(bg)
+    v[fiber] = 1.0
+    
+    m = poly2ndfitVolume(v)
+    X, Y, Z = generatePoly2ndSurfaceSimple(m, v.shape[0], v.shape[1])
+    plotSurface(X, Y, Z)
+
+
 if __name__ == '__main__':
-    testTime()
+    print 'load volume ...'
+    v_path = r'D:\Dataset\round2\silk\silk_density.dat' # 1013, 992, 105
+    v = load(v_path)    # float32, [0, 65535]
+    v = v[:,:,25:85]
+    print 'volume shape: ', v.shape
+
+    # first, denoise using ed, and eJ?!
+    print 'denoise using ed ...'
+    bg = (v < 0.4 * 65535)
+    v[bg] = 0.0
+
+    # need binarize?
+    print 'binarize ...'
+    fiber = np.logical_not(bg)
+    v[fiber] = 1.0
+    
+    m = poly2ndfitVolume(v)
+    X, Y, Z = generatePoly2ndSurfaceSimple(m, v.shape[0], v.shape[1])
+    plotSurface(X, Y, Z)

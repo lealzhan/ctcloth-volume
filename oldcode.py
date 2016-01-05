@@ -853,3 +853,90 @@ if __name__ == '__main__':
     pass
     #straightenSample()
 #--------------------------------------------
+
+
+#---- fitvolume oooold ------
+def fitVolume():
+    volume = Util.loadData(r'D:\Datasets\PreprocessingData\silk_he.dat')
+    volume = volume.swapaxes(0, 2).swapaxes(0, 1)
+    
+    t = volume.shape[2]
+    idx = np.arange(0,t,2)
+    volume = volume[:,:,idx]
+    
+    nx, ny, nz = volume.shape
+    x = np.arange(0, nx)
+    y = np.arange(0, ny)
+    z = np.arange(0, nz)
+#    xv, yv, zv = np.meshgrid(x, y, z)
+    xv, yv, zv = np.meshgrid(x, y, z, indexing='ij')    
+    
+#    xv = xv.ravel()
+#    yv = yv.ravel()
+#    zv = zv.ravel()
+    del x, y, z
+    
+#    m = Util.polyfit2d(xv, yv, zv, w=volume[xv, yv, zv])
+    m = Util.polyfit2d(xv.ravel(), yv.ravel(), zv.ravel(), w=volume.ravel())
+    
+    return m
+
+
+def testFitVolume():
+#    volume = Util.loadData(r'D:\Datasets\PreprocessingData\silk_he.dat')
+#    volume = volume.swapaxes(0, 2).swapaxes(0, 1)
+    m = [2.30025646e+01, 1.20812555e-02, -1.10236229e-05, 3.25151389e-03,
+  -7.60125483e-07, 1.00304238e-08, -2.44075796e-06, -1.05850001e-08,
+   2.62056002e-13]
+    m = np.asarray(m)    
+    
+    nx, ny = (1013,992)
+    x = np.arange(0, nx)
+    y = np.arange(0, ny)
+    X, Y = np.meshgrid(x, y, indexing='ij')
+    Z = Util.polyval2d(X, Y, m)
+
+    print Z[0, 0], Z[0, 1]
+    Z[0, 0] = 0
+    Z[0, 1] = 105
+
+    Util.plotSurface(X, Y, Z)
+    return Z
+
+
+def resample():
+    volume = Util.loadData(r'D:\Datasets\PreprocessingData\silk_he.dat')
+    volume = volume.swapaxes(0, 2).swapaxes(0, 1)
+
+    m = [25.6207523,
+         0.00563881328,
+         -7.50831215e-06,
+         -0.000110252038,
+         5.8775209e-07,
+         -4.20923367e-10,
+         2.7086295e-07,
+         -1.18467307e-09,
+         1.03793103e-12]
+    m = np.asarray(m)
+    
+    nx, ny, nz = volume.shape
+    x = np.arange(0, nx)
+    y = np.arange(0, ny)
+    X, Y = np.meshgrid(x, y, indexing='ij')
+    Z = Util.polyval2d(X, Y, m)
+    
+    print Z.shape
+    
+    Zmin = Z.min()
+    Zmax = Z.max()
+    
+    R = np.zeros((nx, ny, nz + Zmax))
+    
+    for i, j in zip(X.ravel(), Y.ravel()):
+        s = int(Zmax - Z[i, j])
+        R[i, j, s:s+nz] = volume[i, j, :]
+    
+    Util.dumpData(R, r'D:\Datasets\PreprocessingData\silk_rs.dat')
+        
+    return R
+    
