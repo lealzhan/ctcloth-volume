@@ -104,16 +104,18 @@ def volumeProcessing():
 def createMitsubaVolume():
     density_path = r'D:\Dataset\round2\silk\silk_density.dat'
     orientation_path = r'D:\Dataset\round2\silk\silk_orientation.dat'
-    density_path_mis = r'D:\Dataset\round2\silk\silk_density_mis.dat'
-    orientation_path_mis = r'D:\Dataset\round2\silk\silk_orientation_mis.dat'
+    density_path_mis = r'D:\Dataset\round2\silk\silk_density_mis_xy200-800.vol'
+    orientation_path_mis = r'D:\Dataset\round2\silk\silk_orientation_mis_xy200-800.vol'
 
     print 'create density mitsuba volume ...'
     density = load(density_path)
+    density = density[200:800, 200:800]
     print 'density shape: ', density.shape
     createMitsubaGridVolumeSimple(density, density_path_mis, 0.5)
 
     print 'create orientation mitsuba volume ...'
     orientation = load(orientation_path)
+    orientation = orientation[200:800, 200:800]
     print 'orientation shape: ', orientation.shape
     createMitsubaGridVolumeSimple(orientation, orientation_path_mis, 0.5)
 
