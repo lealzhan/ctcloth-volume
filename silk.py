@@ -5,9 +5,10 @@ from plot import *
 from imageio import *
 from fit import *
 from resample import *
+from volumeio import *
 
 
-def main():
+def volumeProcessing():
     silk_path = r'D:\Dataset\round2\silk\silk.dat'
     ds_path = r'D:\Dataset\round2\silk\ds.dat'
     qs_path = r'D:\Dataset\round2\silk\qs.dat'
@@ -100,5 +101,24 @@ def main():
     dump(orientation_path + '_before_denoise', d_max_before_denoise)
 
 
+def createMitsubaVolume():
+    density_path = r'D:\Dataset\round2\silk\silk_density.dat'
+    orientation_path = r'D:\Dataset\round2\silk\silk_orientation.dat'
+    density_path_mis = r'D:\Dataset\round2\silk\silk_density_mis.dat'
+    orientation_path_mis = r'D:\Dataset\round2\silk\silk_orientation_mis.dat'
+
+    print 'create density mitsuba volume ...'
+    density = load(density_path)
+    print 'density shape: ', density.shape
+    createMitsubaGridVolumeSimple(density, density_path_mis, 0.5)
+
+    print 'create orientation mitsuba volume ...'
+    orientation = load(orientation_path)
+    print 'orientation shape: ', orientation.shape
+    createMitsubaGridVolumeSimple(orientation, orientation_path_mis, 0.5)
+
+    print 'Done.'
+
+
 if __name__ == '__main__':
-    main()
+    createMitsubaVolume()
