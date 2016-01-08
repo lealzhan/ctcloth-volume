@@ -1,5 +1,5 @@
 import numpy as np
-from common import load, dump, time_current
+from common import *
 from orientation import generateDirections, computeFilters, computeFiberOrientationFFT   
 from plot import *
 from imageio import *
@@ -77,7 +77,7 @@ def volumeProcessing():
     print 'dump density, J, orientation ..'
     dump(density_path, v)
     dump(J_path, J_max)
-    dump(orientation_path, d_max)
+    dumpLarge(orientation_path, d_max)
     #dump(orientation_path + '_before_denoise', d_max_before_denoise)
 
 

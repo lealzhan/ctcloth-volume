@@ -13,6 +13,11 @@ def dump(file_name, data, mode='wb'):
         data.dump(file)
 
 
+def dumpLarge(file_name, data, mode='wb'):
+    with open(file_name, mode) as file:
+        np.save(file, data)
+
+
 def time_current():
     return timeit.default_timer()
 
