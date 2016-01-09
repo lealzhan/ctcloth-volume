@@ -81,5 +81,28 @@ def volumeProcessing():
     #dump(orientation_path + '_before_denoise', d_max_before_denoise)
 
 
+def createMitsubaVolume():
+    density_path = r''
+    orientation_path = r''
+    density_path_mis = r''
+    orientation_path_mis = r''
+
+    print 'create density mitsuba volume ..'
+    density = load(density_path)
+    density = density[:,:,5:495]
+    print 'density shape: ', density.shape
+    createMitsubaGridVolumeSimple(density, density_path_mis, 0,25)
+
+    del density
+
+    print 'create orientation mitsuba volume ..'
+    orientation = load(orientation_path)
+    orientation = orientation[:,:,5:495]
+    print 'orientation shape: ', orientation.shape
+    createMitsubaGridVolumeSimple(orientation, orientation_path_mis, 0.25)
+
+    print 'Done.'
+
+
 if __name__ == '__main__':
-    volumeProcessing()
+    createMitsubaVolume()
