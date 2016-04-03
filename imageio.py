@@ -25,7 +25,7 @@ def readTiffsInFileFolder(folder_name):
 
     if img_count == 0:
         print 'no image in folder: "', folder_name, '".'
-    h, w = readTiff(os.path.join(folder_name, img_names[0]))
+    h, w = readTiff(os.path.join(folder_name, img_names[0])).shape
 
     img_datas = np.zeros((img_count, h, w), dtype='uint16')
     i = 0
